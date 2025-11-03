@@ -2,7 +2,7 @@ import 'package:dart_either/dart_either.dart';
 import 'package:dash_board/feature/add_product/domain/add_product_repo.dart';
 import 'package:image_picker/image_picker.dart';
 
-class AddProductRepoImpl extends AddProductRepo {
+class AddProductRepoImpl implements AddProductRepo {
   @override
 
   Future<XFile?> addImagePicker() async {

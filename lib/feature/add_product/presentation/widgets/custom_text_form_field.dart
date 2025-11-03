@@ -2,7 +2,7 @@ import 'package:dash_board/core/utils/app_text_styles.dart';
 import 'package:flutter/material.dart';
 
 class CustomTextFormFiled extends StatelessWidget {
-  // final TextEditingController? controller;
+  final TextEditingController? controller;
   final String? Function(String?)? validator;
   final TextInputType? keyboardType;
   final bool? obscureText;
@@ -13,7 +13,7 @@ class CustomTextFormFiled extends StatelessWidget {
 
   const CustomTextFormFiled({
     super.key,
-    // required this.controller,
+    required this.controller,
     this.validator,
     this.keyboardType,
     this.obscureText,
@@ -26,8 +26,7 @@ class CustomTextFormFiled extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      // controller: controller,
-      // validator: validator,
+      controller: controller,
       validator: (value){
         if(value == null || value.isEmpty){
           return 'هذا الحقل مطلوب';
