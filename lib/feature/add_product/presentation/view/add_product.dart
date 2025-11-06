@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:dash_board/core/helper/show_error.dart';
 import 'package:dash_board/core/utils/app_colors.dart';
+import 'package:dash_board/feature/add_product/data/product_repo_imple.dart';
 import 'package:dash_board/feature/add_product/domain/entities/add_product_input_entities.dart';
 import 'package:dash_board/feature/add_product/presentation/cubit/add_product_cubit.dart';
 import 'package:dash_board/feature/add_product/presentation/widgets/custom_text_form_field.dart';
@@ -27,7 +28,6 @@ class AddProduct extends StatelessWidget {
       ),
       body: Form(
         key: _formKey,
-        
         child: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(16.0),
@@ -88,7 +88,21 @@ class AddProduct extends StatelessWidget {
                   },
                 ),
                 BlocConsumer<AddProductCubit, AddProductState>(
-                  builder: (context, state) {
+                  listener: (contextt, state) {
+                    // if(state.imageUrl!=null || state.imageUrl!.isNotEmpty){
+                    //   print('lol2');
+                    //   contextt.read<AddProductCubit>().insertData(
+                    //                     context: context,
+                    //                     productName: nameController.text,
+                    //                     description: descriptionController.text,
+                    //                     code: codeController.text,
+                    //                     price: int.parse(priceController.text),
+                    //                     urlImage: state.imageUrl,
+                    //                   );
+                    //   print('lol3');
+                    // }
+                  },
+                  builder: (contexttt, state) {
                     return Align(
                       child: SizedBox(
                         width: double.infinity,
@@ -99,17 +113,38 @@ class AddProduct extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(8),
                               ),
                             ),
-                            onPressed: () {
+                            onPressed: () async {
                               if (_formKey.currentState!.validate()) {
                                 if (state.image != null) {
-                                  AddProductInputEntities inputs = AddProductInputEntities(productName: nameController.text, 
-                                  description: descriptionController.text, 
-                                  code: codeController.text, 
-                                  image: state.image!, 
-                                  price: int.parse(priceController.text));
-                                } else {
-                                  showError(context);
+
+                               String imageUrl =  await contexttt
+                                      .read<AddProductCubit>()
+                                      .uplaodImage(
+                                          context: context,
+                                          filePath: state.image!.path,
+                                          file: File(state.image!.path));
+                                  if (!context.mounted) return;
+                                  if(imageUrl.isNotEmpty || imageUrl != ''){
+                                  await contexttt
+                                      .read<AddProductCubit>()
+                                      .insertData(
+                                        context: context,
+                                        productName: nameController.text,
+                                        description: descriptionController.text,
+                                        code: codeController.text,
+                                        price: int.parse(priceController.text),
+                                        urlImage: state.imageUrl,
+                                      );
                                   }
+
+                                  // AddProductInputEntities inputs = AddProductInputEntities(productName: nameController.text,
+                                  // description: descriptionController.text,
+                                  // code: codeController.text,
+                                  // image: state.image!,
+                                  // price: int.parse(priceController.text));
+                                } else {
+                                  showError(context, 'Please select an Image');
+                                }
                               }
                             },
                             child: Text(
@@ -119,7 +154,6 @@ class AddProduct extends StatelessWidget {
                       ),
                     );
                   },
-                  listener: (context, state) {},
                 )
               ],
             ),
